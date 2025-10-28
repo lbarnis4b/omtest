@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+	<!-- Users views -->
+	<record id="view_users_form" model="ir.ui.view">
+		<field name="name">res.users.form</field>
+		<field name="model">res.users</field>
+		<field name="inherit_id" ref="base.view_users_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//div[contains(@class, 'oe_button_box')]" position="inside">
+				<button name="licensed_on_off" string="License On" attrs="{'invisible' : [('licensed_user', '=', False)]}"
+				type="object" class="oe_inline oe_stat_button" icon="fa-lock" groups="base.group_no_one"/>
+				<button name="licensed_on_off" string="License Off" attrs="{'invisible' : [('licensed_user', '=', True)]}"
+				type="object" class="oe_inline oe_stat_button" icon="fa-unlock" groups="base.group_no_one"/>
+			</xpath>
+			<field name="login" position="after">
+				<field name="licensed_user" invisible="1" readonly="1" />
+			</field>
+		</field>
+	</record>
+
+	<record id="view_users_tree" model="ir.ui.view">
+		<field name="name">res.users.tree</field>
+		<field name="model">res.users</field>
+		<field name="inherit_id" ref="base.view_users_tree" />
+		<field name="arch" type="xml">
+			<field name="login_date" position="after">
+				<field name="licensed_user" groups="base.group_no_one"/>
+			</field>
+		</field>
+	</record>
+
+	<record id="view_users_search" model="ir.ui.view">
+		<field name="name">res.users.search</field>
+		<field name="model">res.users</field>
+		<field name="inherit_id" ref="base.view_users_search" />
+		<field name="arch" type="xml">
+			<field name="name" position="after">
+				<field name="licensed_user" />
+			</field>
+			<field name="share" position="after">
+				<separator/>
+				<filter name="licensed_user" string="Licensed Users" domain="[('licensed_user','=',True)]"/>
+				<separator/>
+			</field>
+		</field>
+	</record>
+
+	<!-- Server action for multiple License reversing -->
+	<record id="action_licensing_reversal" model="ir.actions.server">
+		<field name="name">Reverse Licensing</field>
+		<field name="model_id" ref="base.model_res_users" />
+		<field name="state">code</field>
+		<field name="code">action = model.reverse_licensing()</field>
+	</record>
+</data>
+</odoo>
